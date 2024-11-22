@@ -1,5 +1,3 @@
-// src/pages/HomePage.tsx
-
 import { useState, useEffect, useRef } from "react";
 import {
 	Title,
@@ -47,14 +45,22 @@ const HomePage = () => {
 
 	useEffect(() => {
 		if (data) {
+			if (page === 0 && data.content.length === 0) {
+				setHasMore(false);
+				setAllEvents([]);
+				return;
+			}
+
 			if (page === 0) {
 				setAllEvents(data.content);
 			} else {
 				setAllEvents((prev) => [...prev, ...data.content]);
 			}
-			setHasMore(!data.last);
+
+			// Проверяем, есть ли еще данные
+			setHasMore(!data.last && data.content.length > 0);
 		}
-	}, [data]);
+	}, [data, page]);
 
 	useEffect(() => {
 		if (!isInitialMount.current) {
@@ -68,7 +74,12 @@ const HomePage = () => {
 	useEffect(() => {
 		const observer = new IntersectionObserver(
 			(entries) => {
-				if (entries[0].isIntersecting && hasMore && !isLoading) {
+				if (
+					entries[0].isIntersecting &&
+					hasMore &&
+					!isLoading &&
+					allEvents.length > 0
+				) {
 					setPage((prev) => prev + 1);
 				}
 			},
@@ -84,7 +95,7 @@ const HomePage = () => {
 				observer.unobserve(observerTarget.current);
 			}
 		};
-	}, [hasMore, isLoading]);
+	}, [hasMore, isLoading, allEvents.length]);
 
 	const applyFilters = () => {
 		setAllEvents([]);
@@ -242,7 +253,7 @@ const HomePage = () => {
 						<EventCard key={`${event.eventId}-${index}`} event={event} />
 					))}
 
-					<div ref={observerTarget} style={{ height: "20px" }} />
+					{hasMore && <div ref={observerTarget} style={{ height: "20px" }} />}
 
 					{isLoading && (
 						<Center p="xl">
