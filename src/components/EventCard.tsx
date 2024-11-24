@@ -12,7 +12,7 @@ const EventCard = ({ event }: EventCardProps) => {
 	const navigate = useNavigate();
 
 	const handleDetailsClick = () => {
-		navigate(`/sport-events/${event.id}`);
+		navigate(`/events/${event.id}`);
 	};
 	return (
 		<Card shadow="sm" padding="lg" radius="md" withBorder>
