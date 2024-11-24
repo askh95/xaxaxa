@@ -15,6 +15,7 @@ import NewsPage from "./pages/NewsPage";
 import EventDetailsPage from "./pages/EventDetailsPage";
 import PrivateRoute from "./components/PrivateRoute";
 import { ForumPage } from "./pages/ForumPage";
+import TeamPage from "./pages/TeamPage";
 
 const theme = createTheme({
 	primaryColor: "blue",
@@ -39,9 +40,14 @@ function App() {
 								<Route path="/events" element={<HomePage />} />
 								<Route path="/news" element={<NewsPage />} />
 								<Route path="/events/:id" element={<EventDetailsPage />} />
-
-								{/* Forum routes */}
-								{/* Forum routes */}
+								<Route
+									path="/team"
+									element={
+										<PrivateRoute>
+											<TeamPage />
+										</PrivateRoute>
+									}
+								/>
 								<Route
 									path="/forum"
 									element={

@@ -1,4 +1,3 @@
-// src/pages/NewsPage.tsx
 import { useState, useEffect, useRef } from "react";
 import {
 	Container,
@@ -48,7 +47,6 @@ const NewsPage = () => {
 				setAllArticles((prev) => [...prev, ...data.articles]);
 			}
 
-			// Проверяем, есть ли еще статьи для загрузки
 			const totalFetchedArticles =
 				(page - 1) * PAGE_SIZE + data.articles.length;
 			if (totalFetchedArticles >= data.totalArticles) {

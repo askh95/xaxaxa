@@ -1,4 +1,3 @@
-// src/pages/EventDetailsPage.tsx
 import { useNavigate, useParams } from "react-router-dom";
 import {
 	Container,
@@ -56,7 +55,6 @@ const EventDetailsPage = () => {
 				>
 					Вернуться к календарю
 				</Button>
-				{/* Заголовок и категория */}
 				<Group justify="space-between" align="center">
 					<Title order={1}>{event.name}</Title>
 					<Badge size="xl" color="blue" variant="light">
@@ -64,7 +62,6 @@ const EventDetailsPage = () => {
 					</Badge>
 				</Group>
 
-				{/* Основная информация */}
 				<Paper shadow="sm" p="md" radius="md">
 					<Grid>
 						<Grid.Col span={6}>
@@ -112,7 +109,6 @@ const EventDetailsPage = () => {
 					</Grid>
 				</Paper>
 
-				{/* Описание */}
 				<Paper shadow="sm" p="md" radius="md">
 					<Title order={3} mb="md">
 						Описание
@@ -120,7 +116,6 @@ const EventDetailsPage = () => {
 					<Text>{event.description}</Text>
 				</Paper>
 
-				{/* Дополнительная информация */}
 				<Paper shadow="sm" p="md" radius="md">
 					<Title order={3} mb="md">
 						Дополнительная информация
@@ -148,7 +143,6 @@ const EventDetailsPage = () => {
 					</Grid>
 				</Paper>
 
-				{/* Расписание или дополнительные блоки */}
 				<Paper shadow="sm" p="md" radius="md">
 					<Title order={3} mb="md">
 						Расписание
@@ -165,7 +159,6 @@ const EventDetailsPage = () => {
 					</Stack>
 				</Paper>
 
-				{/* Контакты организаторов */}
 				<Paper shadow="sm" p="md" radius="md">
 					<Title order={3} mb="md">
 						Контакты организаторов
@@ -185,7 +178,6 @@ const EventDetailsPage = () => {
 					</Stack>
 				</Paper>
 
-				{/* Правила участия */}
 				<Paper shadow="sm" p="md" radius="md">
 					<Title order={3} mb="md">
 						Правила участия

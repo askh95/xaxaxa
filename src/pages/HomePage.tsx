@@ -1,4 +1,3 @@
-// src/pages/HomePage.tsx
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import {

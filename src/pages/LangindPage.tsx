@@ -15,15 +15,19 @@ import {
 } from "@mui/material";
 import {
 	SportsSoccer,
-	FilterList,
-	Notifications,
-	CalendarMonth,
+	Speed,
+	AccessTime,
+	Security,
+	Forum,
+	Groups,
+	Newspaper,
 	People,
 	LocationOn,
 	Category,
 	Timer,
 	EmojiEvents,
 } from "@mui/icons-material";
+
 import home from "../assets/home.webp";
 import { useNavigate } from "react-router-dom";
 
@@ -39,22 +43,38 @@ const LandingPage = () => {
 
 	const features = [
 		{
-			icon: <FilterList />,
-			title: "Продвинутая фильтрация",
+			icon: <Speed />,
+			title: "Быстрая работа",
 			description:
-				"Фильтруйте мероприятия по виду спорта, дисциплине, месту проведения и другим параметрам",
+				"Молниеносная скорость работы системы благодаря оптимизированной архитектуре",
 		},
 		{
-			icon: <CalendarMonth />,
-			title: "Гибкое отображение",
-			description:
-				"Просматривайте события в разных временных форматах: неделя, месяц, квартал или полугодие",
+			icon: <AccessTime />,
+			title: "Доступность 24/7",
+			description: "Круглосуточный доступ к системе из любой точки мира",
 		},
 		{
-			icon: <Notifications />,
-			title: "Умные уведомления",
+			icon: <Security />,
+			title: "Безопасность",
+			description: "Надежная защита данных и конфиденциальность пользователей",
+		},
+		{
+			icon: <Forum />,
+			title: "Форум общения",
 			description:
-				"Получайте персонализированные уведомления о новых мероприятиях и изменениях в расписании",
+				"Удобная платформа для обсуждений и обмена опытом с другими пользователями",
+		},
+		{
+			icon: <Groups />,
+			title: "Команда",
+			description:
+				"Профессиональная команда специалистов, готовая помочь в любой момент",
+		},
+		{
+			icon: <Newspaper />,
+			title: "Новости",
+			description:
+				"Актуальные новости и обновления системы в режиме реального времени",
 		},
 	];
 
@@ -95,7 +115,6 @@ const LandingPage = () => {
 				</Toolbar>
 			</AppBar>
 
-			{/* Hero Section */}
 			<Box
 				id="about"
 				sx={{
@@ -141,7 +160,6 @@ const LandingPage = () => {
 				</Container>
 			</Box>
 
-			{/* Features Section */}
 			<Container id="features" maxWidth="lg" sx={{ mb: 8 }}>
 				<Typography variant="h3" component="h2" align="center" gutterBottom>
 					Основные возможности
@@ -196,7 +214,6 @@ const LandingPage = () => {
 				</Container>
 			</Box>
 
-			{/* Footer */}
 			<Box id="contacts" sx={{ bgcolor: "grey.900", color: "white", py: 6 }}>
 				<Container maxWidth="lg">
 					<Grid container spacing={4}>

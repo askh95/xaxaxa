@@ -246,7 +246,6 @@ const Navigation = () => {
 				justify="space-between"
 				style={{ maxWidth: "1200px", margin: "0 auto" }}
 			>
-				{/* Logo Section */}
 				<Group>
 					<Link to="/" style={{ textDecoration: "none" }}>
 						<Group gap={rem(12)} align="center" wrap="nowrap">
@@ -296,7 +295,10 @@ const Navigation = () => {
 					<NavigationLink to="/events">Мероприятия</NavigationLink>
 					<NavigationLink to="/news">Новости</NavigationLink>
 					{isAuthenticated && (
-						<NavigationLink to="/forum">Форум</NavigationLink>
+						<>
+							<NavigationLink to="/forum">Форум</NavigationLink>
+							<NavigationLink to="/team">Команды</NavigationLink>
+						</>
 					)}
 				</Group>
 
@@ -348,9 +350,14 @@ const Navigation = () => {
 							Новости
 						</MobileNavLink>
 						{isAuthenticated && (
-							<MobileNavLink to="/forum" onClick={closeDrawer}>
-								Форум
-							</MobileNavLink>
+							<>
+								<MobileNavLink to="/forum" onClick={closeDrawer}>
+									Форум
+								</MobileNavLink>
+								<MobileNavLink to="/team" onClick={closeDrawer}>
+									Команды
+								</MobileNavLink>
+							</>
 						)}
 					</Stack>
 
