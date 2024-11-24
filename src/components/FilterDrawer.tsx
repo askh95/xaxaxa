@@ -9,17 +9,14 @@ import {
 	Select,
 	NumberInput,
 	TextInput,
+	Loader,
 } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import { DatePickerInput } from "@mantine/dates";
-import {
-	SPORTS_TYPES,
-	DISCIPLINES,
-	COMPETITION_TYPES,
-	TIME_FRAMES,
-} from "../features/events/constants";
+import { DISCIPLINES, TIME_FRAMES } from "../features/events/constants";
 import type { EventFilters } from "../features/events/types";
 import { formatDate, getDateRangeFromPeriod } from "../features/events/utils";
+import { useGetSportCategoriesQuery } from "../features/events/eventsApi";
 
 interface FilterDrawerProps {
 	opened: boolean;
@@ -42,14 +39,27 @@ export function FilterDrawer({
 		[]
 	);
 
+	// Fetch sport categories from API
+	const { data: sportCategories, isLoading: isLoadingCategories } =
+		useGetSportCategoriesQuery({
+			size: 100,
+		});
+
+	// Transform categories data for Select component
+	const sportTypeOptions =
+		sportCategories?.content.map((category) => ({
+			value: category.id.toString(),
+			label: category.name,
+		})) || [];
+
 	useEffect(() => {
-		const sportType = filters.sportType as keyof typeof DISCIPLINES | undefined;
-		if (sportType && DISCIPLINES[sportType]) {
-			setAvailableDisciplines(DISCIPLINES[sportType] as any);
+		const category = filters.category as keyof typeof DISCIPLINES | undefined;
+		if (category && DISCIPLINES[category]) {
+			setAvailableDisciplines(DISCIPLINES[category] as any);
 		} else {
 			setAvailableDisciplines([]);
 		}
-	}, [filters.sportType]);
+	}, [filters.category]);
 
 	const handleChange = (field: keyof EventFilters, value: any) => {
 		if (field === "timeFrame") {
@@ -59,6 +69,17 @@ export function FilterDrawer({
 				timeFrame: value,
 				startDate: startDate as any,
 				endDate: endDate as any,
+			});
+		}
+		// Обработка выбора категории спорта
+		else if (field === "category" && sportCategories?.content) {
+			const category = sportCategories.content.find(
+				(cat) => cat.id.toString() === value
+			);
+			onFiltersChange({
+				...filters,
+				category: (category?.name || null) as any,
+				discipline: null as any, // Сбрасываем дисциплину при смене категории
 			});
 		} else {
 			onFiltersChange({
@@ -101,16 +122,17 @@ export function FilterDrawer({
 				/>
 
 				<Select
-					label="Вид спорта"
-					placeholder="Выберите вид спорта"
-					data={SPORTS_TYPES}
-					value={filters.sportType}
-					onChange={(value) => {
-						handleChange("sportType", value);
-						handleChange("discipline", null);
-					}}
+					label="Категория спорта"
+					placeholder="Выберите категорию"
+					data={sportTypeOptions}
+					value={sportCategories?.content
+						.find((cat) => cat.name === filters.category)
+						?.id.toString()}
+					onChange={(value) => handleChange("category", value)}
 					clearable
 					searchable
+					disabled={isLoadingCategories}
+					rightSection={isLoadingCategories ? <Loader size="xs" /> : null}
 				/>
 
 				{availableDisciplines.length > 0 && (
@@ -126,16 +148,6 @@ export function FilterDrawer({
 				)}
 
 				<Select
-					label="Тип соревнования"
-					placeholder="Выберите тип"
-					data={COMPETITION_TYPES}
-					value={filters.competitionType}
-					onChange={(value) => handleChange("competitionType", value)}
-					clearable
-					searchable
-				/>
-
-				<Select
 					label="Пол участников"
 					placeholder="Выберите пол"
 					data={[
@@ -149,16 +161,13 @@ export function FilterDrawer({
 					clearable
 				/>
 
-				<NumberInput
-					label="Возраст"
-					placeholder="Укажите возраст"
-					value={filters.ageGroup ? Number(filters.ageGroup) : ""}
-					onChange={(value) => handleChange("ageGroup", value?.toString())}
-					min={0}
-					max={100}
-					clampBehavior="strict"
-					allowDecimal={false}
-					hideControls
+				<TextInput
+					label="Возрастная группа"
+					placeholder="Укажите возрастную группу"
+					value={filters.ageGroup}
+					onChange={(event) =>
+						handleChange("ageGroup", event.currentTarget.value)
+					}
 				/>
 
 				<TextInput

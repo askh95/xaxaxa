@@ -26,18 +26,15 @@ export interface Event {
 
 export interface EventFilters {
 	timeFrame?: string;
-	sportType?: string;
 	discipline?: string;
-	program?: string;
-	venue?: string;
 	minParticipants?: number;
 	maxParticipants?: number;
 	gender?: string;
 	ageGroup?: string;
-	competitionType?: string;
 	startDate?: string;
 	endDate?: string;
 	location?: string;
+	category?: string;
 }
 
 export interface Sort {
@@ -67,4 +64,23 @@ export interface PaginatedResponse<T> {
 	numberOfElements: number;
 	pageable: Pageable;
 	sort: Sort;
+}
+
+export interface AuthModalProps {
+	opened: boolean;
+	close: () => void;
+}
+
+export interface LoginFormValues {
+	email: string;
+	password: string;
+}
+
+export interface RegisterFormValues extends LoginFormValues {
+	confirmPassword: string;
+	name: string;
+}
+export interface Category {
+	id: number;
+	name: string;
 }

@@ -1,7 +1,6 @@
 // src/features/events/eventsApi.ts
-
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { Event, EventFilters, PaginatedResponse } from "./types";
+import type { Event, EventFilters, PaginatedResponse, Category } from "./types";
 
 const BASE_URL = "http://213.171.12.10:8080/api";
 
@@ -19,8 +18,28 @@ const removeEmptyValues = (obj: Record<string, any>) => {
 export const eventsApi = createApi({
 	reducerPath: "eventsApi",
 	baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
-	tagTypes: ["Events"],
+	tagTypes: ["Events", "Categories"],
 	endpoints: (builder) => ({
+		getSportCategories: builder.query<
+			PaginatedResponse<Category>,
+			{ page?: number; size?: number; search?: string }
+		>({
+			query: ({ page = 0, size = 30, search }) => {
+				const params = removeEmptyValues({
+					page,
+					size,
+					search,
+				});
+
+				return {
+					url: "/sport-categories",
+					method: "GET",
+					params,
+				};
+			},
+			providesTags: ["Categories"],
+		}),
+
 		getEvents: builder.query<
 			PaginatedResponse<Event>,
 			{ filters?: EventFilters; page: number; size: number }
@@ -48,8 +67,47 @@ export const eventsApi = createApi({
 					})),
 				};
 			},
+			keepUnusedDataFor: 0,
+			providesTags: (result) =>
+				result
+					? [
+							...result.content.map(({ id }) => ({
+								type: "Events" as const,
+								id,
+							})),
+							{ type: "Events", id: "LIST" },
+					  ]
+					: [{ type: "Events", id: "LIST" }],
+		}),
+
+		getEventById: builder.query<Event, number>({
+			query: (id) => `/sport-events/${id}`,
+			transformResponse: (response: Event) => ({
+				...response,
+				dateStart: new Date(response.dateStart).toISOString(),
+				dateEnd: new Date(response.dateEnd).toISOString(),
+			}),
+			providesTags: (_, __, id) => [{ type: "Events", id }],
 		}),
 	}),
 });
 
-export const { useGetEventsQuery } = eventsApi;
+export const {
+	useGetEventsQuery,
+	useGetEventByIdQuery,
+	useGetSportCategoriesQuery,
+} = eventsApi;
+
+export const useRefreshableGetEventsQuery = (args: {
+	filters?: EventFilters;
+	page: number;
+	size: number;
+}) => {
+	const query = useGetEventsQuery(args);
+
+	const refresh = () => {
+		query.refetch();
+	};
+
+	return { ...query, refresh };
+};

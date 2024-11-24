@@ -1,4 +1,6 @@
+// src/pages/HomePage.tsx
 import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
 	Title,
 	Stack,
@@ -27,11 +29,59 @@ const formatDate = (date: Date): string => {
 	return `${year}-${month}-${day}`;
 };
 
+const parseUrlParams = (searchParams: URLSearchParams): EventFilters => {
+	const filters: EventFilters = {};
+
+	const timeFrame = searchParams.get("timeFrame");
+	const category = searchParams.get("category");
+	const discipline = searchParams.get("discipline");
+	const gender = searchParams.get("gender");
+	const ageGroup = searchParams.get("ageGroup");
+	const location = searchParams.get("location");
+	const minParticipants = searchParams.get("minParticipants");
+	const maxParticipants = searchParams.get("maxParticipants");
+	const startDate = searchParams.get("startDate");
+	const endDate = searchParams.get("endDate");
+
+	if (timeFrame) filters.timeFrame = timeFrame;
+	if (category) filters.category = category;
+	if (discipline) filters.discipline = discipline;
+	if (gender) filters.gender = gender;
+	if (ageGroup) filters.ageGroup = ageGroup;
+	if (location) filters.location = location;
+	if (minParticipants) filters.minParticipants = Number(minParticipants);
+	if (maxParticipants) filters.maxParticipants = Number(maxParticipants);
+	if (startDate) filters.startDate = startDate;
+	if (endDate) filters.endDate = endDate;
+
+	return filters;
+};
+
+const updateUrlParams = (
+	filters: EventFilters,
+	setSearchParams: (params: URLSearchParams) => void
+) => {
+	const searchParams = new URLSearchParams();
+
+	Object.entries(filters).forEach(([key, value]) => {
+		if (value !== null && value !== undefined && value !== "") {
+			searchParams.set(key, String(value));
+		}
+	});
+
+	setSearchParams(searchParams);
+};
+
 const HomePage = () => {
+	const [searchParams, setSearchParams] = useSearchParams();
 	const [opened, { open, close }] = useDisclosure(false);
 	const [page, setPage] = useState(0);
-	const [filters, setFilters] = useState<EventFilters>({});
-	const [appliedFilters, setAppliedFilters] = useState<EventFilters>({});
+	const [filters, setFilters] = useState<EventFilters>(() =>
+		parseUrlParams(searchParams)
+	);
+	const [appliedFilters, setAppliedFilters] = useState<EventFilters>(() =>
+		parseUrlParams(searchParams)
+	);
 	const [allEvents, setAllEvents] = useState<Event[]>([]);
 	const [hasMore, setHasMore] = useState(true);
 	const observerTarget = useRef<HTMLDivElement>(null);
@@ -57,7 +107,6 @@ const HomePage = () => {
 				setAllEvents((prev) => [...prev, ...data.content]);
 			}
 
-			// Проверяем, есть ли еще данные
 			setHasMore(!data.last && data.content.length > 0);
 		}
 	}, [data, page]);
@@ -153,19 +202,15 @@ const HomePage = () => {
 			}
 		}
 
-		if (filters.sportType) newFilters.sportType = filters.sportType;
+		if (filters.category) newFilters.category = filters.category;
 		if (filters.discipline) newFilters.discipline = filters.discipline;
-		if (filters.program) newFilters.program = filters.program;
-		if (filters.venue) newFilters.venue = filters.venue;
+		if (filters.gender) newFilters.gender = filters.gender;
+		if (filters.ageGroup) newFilters.ageGroup = filters.ageGroup;
+		if (filters.location) newFilters.location = filters.location;
 		if (filters.minParticipants)
 			newFilters.minParticipants = filters.minParticipants;
 		if (filters.maxParticipants)
 			newFilters.maxParticipants = filters.maxParticipants;
-		if (filters.gender) newFilters.gender = filters.gender;
-		if (filters.ageGroup) newFilters.ageGroup = filters.ageGroup;
-		if (filters.competitionType)
-			newFilters.competitionType = filters.competitionType;
-		if (filters.location) newFilters.location = filters.location;
 
 		if (filters.startDate) {
 			newFilters.startDate = formatDate(new Date(filters.startDate));
@@ -174,6 +219,7 @@ const HomePage = () => {
 			newFilters.endDate = formatDate(new Date(filters.endDate));
 		}
 
+		updateUrlParams(newFilters, setSearchParams);
 		setAppliedFilters(newFilters);
 		close();
 
@@ -191,6 +237,8 @@ const HomePage = () => {
 
 		setFilters({});
 		setAppliedFilters({});
+
+		setSearchParams(new URLSearchParams());
 
 		notifications.show({
 			title: "Готово!",
@@ -210,16 +258,7 @@ const HomePage = () => {
 	}
 
 	return (
-		<Box
-			style={{
-				minHeight: "100vh",
-				display: "flex",
-				flexDirection: "column",
-				width: "100%",
-				maxWidth: "100%",
-				overflowX: "hidden",
-			}}
-		>
+		<Box>
 			<Box
 				p="md"
 				style={{
@@ -227,7 +266,7 @@ const HomePage = () => {
 					top: 0,
 					backgroundColor: "white",
 					borderBottom: "1px solid #eee",
-					zIndex: 100,
+					zIndex: 1,
 				}}
 			>
 				<Flex justify="space-between" align="center">

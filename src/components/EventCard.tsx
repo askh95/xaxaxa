@@ -1,12 +1,19 @@
+// src/components/EventCard.tsx
 import { Card, Text, Badge, Group, Button, Stack, Flex } from "@mantine/core";
 import { IconCalendarEvent, IconMapPin, IconUsers } from "@tabler/icons-react";
 import { Event } from "../features/events/types";
+import { useNavigate } from "react-router-dom";
 
 interface EventCardProps {
 	event: Event;
 }
 
 const EventCard = ({ event }: EventCardProps) => {
+	const navigate = useNavigate();
+
+	const handleDetailsClick = () => {
+		navigate(`/sport-events/${event.id}`);
+	};
 	return (
 		<Card shadow="sm" padding="lg" radius="md" withBorder>
 			<Flex gap="lg" align="flex-start">
@@ -54,6 +61,16 @@ const EventCard = ({ event }: EventCardProps) => {
 					gradient={{ from: "blue", to: "cyan" }}
 					size="md"
 					radius="md"
+					onClick={handleDetailsClick}
+					styles={(theme) => ({
+						root: {
+							transition: "all 0.2s ease",
+							"&:hover": {
+								transform: "scale(1.05)",
+								boxShadow: theme.shadows.md,
+							},
+						},
+					})}
 				>
 					Подробнее
 				</Button>
